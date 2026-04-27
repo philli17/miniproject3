@@ -1,11 +1,18 @@
 ---
-title: "miniproject3"
+title: "Home Page"
+image: media/headshot.jpg
+toc: false
+about:
+  template: jolla
+  image-shape: round
+  image-width: 17em
+  links:
+    - text: Email
+      href: mailto:philli17@stolaf.edu
+    - text: GitHub
+      href: https://github.com/philli17
 ---
 
-This is a Quarto website.
+Hi! My name is Mary Phillips and I am a senior Psychology and Norwegian major at St. Olaf College in Minnesota. I'm originally from Huntsville, Alabama, and next year I'll be in Sacramento, California with the Jesuit Volunteer Corps!
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-```{r}
-1 + 1
-```
+![My hometown, Rocket City (Huntsville, AL)](media/rocket_city.jpg)

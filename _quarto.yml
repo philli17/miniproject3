@@ -8,13 +8,13 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - text_analysis.qmd
 
 format:
   html:
-    theme:
-      - cosmo
-      - brand
+    theme: 
+      light: minty
+      dark: solar
     css: styles.css
     toc: true
 
