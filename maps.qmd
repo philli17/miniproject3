@@ -75,13 +75,36 @@ census_sex <- census |>
   slice_head(n = 20) 
 census_sex <- census_sex[-1, ]
 census_sex <- census_sex[-1, ]
+census_sex <- census_sex |>
+  mutate(across(everything(), parse_number))
+  census_sex <- rbind(census_sex, c("Total", colSums(census_sex[,2:105])))
+  census_sex <- census_sex[19, ]
 
-#need to mutate to make num instead of chr
-#sum(census_sex$`Alabama!!Male!!Estimate`)
-#should sum the column
+census_sex <- census_sex |>
+  pivot_longer(
+    cols = !`Label (Grouping)`,
+    names_to = "state",
+    values_to = "number"
+  )
+
+census_sex <- census_sex |>
+  mutate(sex = str_detect(state, "Male")) |>
+  mutate(sex = ifelse(sex == TRUE, "Male", "Female"))
+
+census_sex <- census_sex |>
+  mutate(state = str_extract(state, "[A-Za-z\\s]*[^!]"))
+
+census_sex <- census_sex |>
+  mutate(state = str_to_lower(state))
 
 #then compare male and female, create categorical variable for which is more
 #graph binary category
+
+test <- census_sex |>
+  pivot_wider(
+    names_from = sex,
+    values_from = number
+  )
 
 #make graphs interactive
 ```
