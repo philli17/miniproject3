@@ -25,6 +25,6 @@
     "href": "maps.html",
     "title": "Choropleth Maps",
     "section": "",
-    "text": "Using data from the US Census (data.census.gov), I was curious about mapping the different age categories of Americans. For example, the map below is of children under age 5. The percentages are for that state, so 5.5% of the total population of Alabama is children under age 5.\n\n\n\n\n\n\n\n\n\n\n#this is supposed to be the male/female static map\ncensus_sex &lt;- census |&gt;\n  select(-ends_with(\"Total!!Estimate\")) |&gt;\n  select(-ends_with(\"Percent!!Estimate\")) |&gt;\n  select(-ends_with(\" Male!!Estimate\")) |&gt;\n  select(-ends_with(\" Female!!Estimate\")) |&gt;\n  slice_head(n = 20) \ncensus_sex &lt;- census_sex[-1, ]\ncensus_sex &lt;- census_sex[-1, ]\n\n#need to mutate to make num instead of chr\n#sum(census_sex$`Alabama!!Male!!Estimate`)\n#should sum the column\n\n#then compare male and female, create categorical variable for which is more\n#graph binary category\n\n#make graphs interactive"
+    "text": "Using data from the US Census (data.census.gov), I was curious about mapping the different age categories of Americans. For example, the map below is of children under age 5. The percentages are for that state, so 5.5% of the total population of Alabama is children under age 5."
   }
 ]

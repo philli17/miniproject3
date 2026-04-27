@@ -66,7 +66,8 @@ percent_5 |>
 ```
 
 ```{r}
-#this is supposed to be the male/female static map
+#| echo: false
+#this chunk makes the population totals for male/female by state
 census_sex <- census |>
   select(-ends_with("Total!!Estimate")) |>
   select(-ends_with("Percent!!Estimate")) |>
@@ -97,14 +98,26 @@ census_sex <- census_sex |>
 census_sex <- census_sex |>
   mutate(state = str_to_lower(state))
 
-#then compare male and female, create categorical variable for which is more
-#graph binary category
-
-test <- census_sex |>
+census_sex <- census_sex |>
   pivot_wider(
     names_from = sex,
     values_from = number
   )
 
-#make graphs interactive
+census_sex <- census_sex |>
+  mutate(greater = case_when (
+    Male > Female ~ "M",
+    Female > Male ~ "F"
+  ))
+```
+
+
+```{r}
+#| echo: false
+census_sex |>
+  right_join(us_states, by = c("state" = "region")) |>
+  rename(region = state) |>
+  ggplot(mapping = aes(x = long, y = lat,
+                          group = group)) + 
+  geom_polygon(aes(fill = greater), color = "black")
 ```
