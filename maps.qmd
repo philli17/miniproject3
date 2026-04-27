@@ -1,5 +1,66 @@
 ---
-title: "maps"
-format: html
+title: "Choropleth Maps"
+toc: false
+about:
+  template: jolla
+  links:
+    - text: GitHub
+      href: https://github.com/philli17/miniproject3/blob/main/maps.qmd
+    - text: Data
+      href: https://data.census.gov/table/ACSST1Y2024.S0101?g=010XX00US$0400000
 ---
 
+
+```{r}
+#| message: false
+#| warning: false
+#| echo: false
+
+library(tidyr)
+library(dplyr)
+library(readr)
+library(tidyverse)
+library(mdsr)
+library(maps)
+library(viridis)
+library(lubridate)
+library(statebins)
+library(leaflet)
+
+census <- read_csv("Census.csv")
+census <- census |>
+  select(-ends_with("Male!!Estimate")) |>
+  select(-ends_with("Female!!Estimate")) |>
+  slice_head(n = 20)
+census <- census[-2, ]
+
+percent_5 <- census[2, ]
+percent_5 <- percent_5 |>
+  select(-ends_with("Total!!Estimate"))
+percent_5 <- percent_5 |>
+  pivot_longer(
+    cols = !`Label (Grouping)`,
+    names_to = "state",
+    values_to = "percent"
+  )
+percent_5 <- percent_5 |>
+  mutate(state = str_extract(state, "[A-Za-z\\s]*[^!]"))
+
+us_states <- map_data("state")
+```
+
+Using data from the US Census (data.census.gov), I was curious about mapping the different age categories of Americans. For example, the map below is of children under age 5. The percentages are for that state, so 5.5% of the total population of Alabama is children under age 5.
+
+```{r}
+#| echo: false
+
+percent_5 <- percent_5 |>
+  mutate(state = str_to_lower(state))
+
+percent_5 |>
+  right_join(us_states, by = c("state" = "region")) |>
+  rename(region = state) |>
+  ggplot(mapping = aes(x = long, y = lat,
+                          group = group)) + 
+  geom_polygon(aes(fill = percent), color = "black")
+```

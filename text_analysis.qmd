@@ -1,6 +1,6 @@
 ---
 title: "Mini Project 1 - Text Analysis"
-image: media/headshot.jpg
+image: media/viola_cover.jpg
 toc: false
 about:
   template: jolla
