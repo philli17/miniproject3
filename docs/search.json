@@ -25,6 +25,6 @@
     "href": "maps.html",
     "title": "Choropleth Maps",
     "section": "",
-    "text": "Using data from the US Census (data.census.gov), I was curious about mapping the different age categories of Americans. For example, the map below is of children under age 5. The percentages are for that state, so 5.5% of the total population of Alabama is children under age 5."
+    "text": "Using data from the US Census (data.census.gov), I was curious about mapping the different age categories of Americans. For example, the map below is of children under age 5. The percentages are for that state, so 5.5% of the total population of Alabama is children under age 5.\n\n\n\n\n\n\n\n\n\nAnother way to look at the data is by creating a categorical variable. For this map I took the estimated population of each state, separated by the census by male and female, and compared those numbers. If a state is red Ii.e. California), it has an estimated number of total females larger than its estimated number of males. If the state is blue (i.e. Minnesota), it has estimated more males than females."
   }
 ]

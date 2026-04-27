@@ -26,6 +26,11 @@ library(viridis)
 library(lubridate)
 library(statebins)
 library(leaflet)
+library(sf)
+library(htmltools)
+library(glue)
+
+
 
 census <- read_csv("Census.csv")
 
@@ -64,7 +69,7 @@ percent_5 |>
                           group = group)) + 
   geom_polygon(aes(fill = percent), color = "black")
 ```
-
+Another way to look at the data is by creating a categorical variable. For this map I took the estimated population of each state, separated by the census by male and female, and compared those numbers. If a state is red Ii.e. California), it has an estimated number of total females larger than its estimated number of males. If the state is blue (i.e. Minnesota), it has estimated more males than females. 
 ```{r}
 #| echo: false
 #this chunk makes the population totals for male/female by state
@@ -111,7 +116,6 @@ census_sex <- census_sex |>
   ))
 ```
 
-
 ```{r}
 #| echo: false
 census_sex |>
@@ -121,3 +125,113 @@ census_sex |>
                           group = group)) + 
   geom_polygon(aes(fill = greater), color = "black")
 ```
+
+```{r}
+#| echo: false
+#this is a somewhat redundant redoing of the census data so that the states aren't lowercase. Having them lowercase was necessary for making the above plots, but they'll need capital letter for so they can join with states and be assigned geometry
+#it also adds 
+census_sex <- census |>
+  select(-ends_with("Total!!Estimate")) |>
+  select(-ends_with("Percent!!Estimate")) |>
+  select(-ends_with(" Male!!Estimate")) |>
+  select(-ends_with(" Female!!Estimate")) |>
+  slice_head(n = 20) 
+census_sex <- census_sex[-1, ]
+census_sex <- census_sex[-1, ]
+census_sex <- census_sex |>
+  mutate(across(everything(), parse_number))
+  census_sex <- rbind(census_sex, c("Total", colSums(census_sex[,2:105])))
+  census_sex <- census_sex[19, ]
+
+census_sex <- census_sex |>
+  pivot_longer(
+    cols = !`Label (Grouping)`,
+    names_to = "state",
+    values_to = "number"
+  )
+
+census_sex <- census_sex |>
+  mutate(sex = str_detect(state, "Male")) |>
+  mutate(sex = ifelse(sex == TRUE, "Male", "Female"))
+
+census_sex <- census_sex |>
+  mutate(state = str_extract(state, "[A-Za-z\\s]*[^!]"))
+
+census_sex <- census_sex |>
+  pivot_wider(
+    names_from = sex,
+    values_from = number
+  )
+
+census_sex <- census_sex |>
+  mutate(greater = case_when (
+    Male > Female ~ "M",
+    Female > Male ~ "F"
+  ))
+
+census_sex <- census_sex |>
+  mutate(name = state)
+```
+
+```{r}
+#| echo: false
+#| eval: false
+#this code creates the sf static plot that will become interactive
+census_sf <- states |>
+  left_join(census_sex) |>
+  filter(!(name %in% c("Alaska", "Hawaii", "Puerto Rico")))
+
+ggplot(data = census_sf) + 
+  geom_sf(aes(fill = greater), colour = "white", linetype = 2) + 
+#  geom_sf_label(aes(label = density)) +   # labels too busy here
+  theme_void() 
+```
+
+```{r}
+#| include: false
+#| warning: false
+#| eval: FALSE
+
+# Create our own category bins for population densities
+#   and assign the yellow-orange-red color palette
+bins <- c(0, 10, 20, 50, 100, 200, 500, 1000, Inf)
+pal <- colorBin("YlOrRd", domain = states$density, bins = bins)
+
+# Create labels that pop up when we hover over a state.  The labels must
+#   be part of a list where each entry is tagged as HTML code.
+
+states <- states |>
+  mutate(labels = str_c(name, ": ", density, " people / sq mile"))
+
+# If want more HTML formatting, use these lines instead of those above:
+#states <- states |>
+#  mutate(labels = glue("<strong>{name}</strong><br/>{density} people / #mi<sup>2</sup>"))
+
+labels <- lapply(states$labels, HTML)
+
+leaflet(states) |>
+  setView(-96, 37.8, 4) |>
+  addTiles() |>
+  addPolygons(
+    fillColor = ~pal(density),
+    weight = 2,
+    opacity = 1,
+    color = "white",
+    dashArray = "3",
+    fillOpacity = 0.7,
+    highlightOptions = highlightOptions(
+      weight = 5,
+      color = "#910",
+      dashArray = "",
+      fillOpacity = 0.7,
+      bringToFront = TRUE),
+    label = labels,
+    labelOptions = labelOptions(
+      style = list("font-weight" = "normal", padding = "3px 8px"),
+      textsize = "20px",
+      direction = "auto")) |>
+  addLegend(pal = pal, values = ~density, opacity = 0.7, title = NULL,
+    position = "bottomright")
+
+```
+
