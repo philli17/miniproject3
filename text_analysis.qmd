@@ -1,3 +1,207 @@
 ---
 title: "Mini Project 1 - Text Analysis"
+image: media/headshot.jpg
+toc: false
+about:
+  template: jolla
+  links:
+    - text: GitHub
+      href: https://github.com/philli17/miniproject3/blob/main/text_analysis.qmd
 ---
+
+```{r}
+#| include: FALSE
+library(tidyverse)
+library(tidytext)
+library(textdata)
+library(wordcloud)
+library(wordcloud2)
+library(viridis)
+library(ggthemes)
+library(gutenbergr)
+library(RCurl)
+library(rvest)
+library(httr)
+library(DT)
+library(kableExtra)
+```
+
+# Introduction
+
+When books are posted for free on Project Gutenberg, that usually means that they've had to undergo formatting changes or otherwise converted into an e-book. One of the ways that this happens is through the work of volunteers (on the Distributed Proofreaders website). In the summer of 2024, I did some proofreading to help with the conversion of a book from 1897 called *Viola's Vanity: or, A bitter expiation* by Mrs. Alex McVeigh Miller. For this Mini-project, I wanted to do some text analysis of this book, and a few others by Mrs. Miller.
+
+```{r}
+#| include: FALSE
+
+viola <- gutenberg_download(74796)
+dainty <- gutenberg_download(31257)
+
+viola_text <- viola |>
+  slice_tail(n = 7449) |>
+  slice_head(n = 7426)
+
+dainty_text <- dainty |>
+  slice_tail(n = 6806) |>
+  slice_head(n = 6781)
+
+#slices the table of contents and copyright information from the top
+#slices the formatting information from the bottom 
+#resulting data starts at chapter 1 and ends at THE END
+```
+
+```{r}
+#| include: FALSE
+
+tidy_viola <- viola_text |>
+  mutate(line = row_number()) |>
+  unnest_tokens(word, text, token = "words")
+
+tidy_dainty <- dainty_text |>
+  mutate(line = row_number()) |>
+  unnest_tokens(word, text, token = "words")
+
+smart_stopwords <- get_stopwords(source = "smart")
+
+afinn <- get_sentiments(lexicon = "afinn")
+
+```
+
+```{r}
+#| echo: FALSE
+#| message: FALSE
+
+tidy_viola |>
+  anti_join(smart_stopwords) |>
+  count(word, sort = TRUE) |>
+  filter(word != "NA") |>
+  slice_max(n, n = 20) |>
+  ggplot(aes(fct_reorder(word, n), n)) +
+  geom_col() +
+  coord_flip() +
+  labs(y = "n",
+       x = "Word")
+```
+
+Not surprisingly, when taking out stopwords, the most common word in the text is the name of the main character (Viola). Other character names, like Florian, Desha, and Maxwell are also in the top 20 most common words. Other common words include "heart" and "love" - a little on the nose for a 200 page romance novel from 1897, but it makes sense.
+
+```{r}
+#| echo: FALSE
+#| message: FALSE
+
+tidy_viola |>
+  inner_join(afinn) |>
+  count(value, word, sort = TRUE) |>
+  group_by(value) |>
+  slice_max(n, n = 10) |>
+  ungroup() |>
+  ggplot(aes(x = fct_reorder(word, n), y = n, fill = value)) +
+    geom_col() +  
+    coord_flip() +
+    facet_wrap(~ value, scales = "free") +
+    labs(y = "n",
+         x = "Word")
+```
+
+Graphing frequency of words by affinity score - how positive or negative the word is rated 5 to -5. Most words are either a little positive or a little negative, with only a few words having extreme scores of 4/-4 or 5 and no words scored -5. Interestingly, the -4 scored words are "torture", "tortured", and "tortures", for a total of 7 times.
+
+```{r}
+#| echo: FALSE
+table1 <- tidy_viola |>
+  mutate(t = str_length(word)) |>
+  arrange(desc(t)) |>
+  head(25)
+  
+
+kbl(table1)
+```
+
+Counting the length of each word by number of letters, we can find the longest word in the book. Both preseumptuousness and enthusiastically have 16 letters! They each occur only once.
+
+What about in a different book by the same author?
+
+```{r}
+#| echo: FALSE
+
+table2 <- tidy_dainty |>
+  mutate(t = str_length(word)) |>
+  arrange(desc(t)) |>
+  head(25)
+
+kbl(table2)
+```
+
+In another book by the same author, this one titled *Dainty's Cruel Rivals, or the Fatal Birthday*, the longest word is uncomprehendingly, with 17 letters! We can also see that tied for second place is unconsciousness, and this one occurs *three* times in the book instead of once, like the other long words.
+
+But what proportion of the books are these long words?
+
+```{r}
+#| echo: FALSE
+table3 <- tidy_viola |>
+  mutate(long_word = str_extract(word, "^.{7,}")) |>
+  count(long_word != "NA")
+
+kbl(table3)
+
+table4 <- tidy_viola |>
+  mutate(long_word = str_extract(word, "^.{9,}")) |>
+  count(long_word != "NA")
+
+kbl(table4)
+```
+
+If we define a "long word" as a word with 7 or more letters, then 9183 out of 55314 words in Viola's Vanity are long (16.6%), but if we make a "long word" one with at least 9 letters, that number decreases to only 2779 words (5.3%)
+
+```{r}
+#| echo: FALSE
+
+table5 <- tidy_dainty |>
+  mutate(long_word = str_extract(word, "^.{9,}")) |>
+  count(long_word != "NA")
+
+kbl(table5)
+```
+
+Dainty's Cruel Rivals has almost exactly the same number of 9+ letter words (2774 (compared to 2779!)) even though the book is a little longer.
+
+I wonder if any of the characters from one book appear in the other book, since they are part of the same series from the same author.
+
+```{r}
+#| echo: FALSE
+table6 <- tidy_dainty |>
+  mutate(name = str_detect(word, "viola\\b")) |>
+  filter(name == TRUE)
+
+kbl(table6)
+
+table7 <- tidy_viola |>
+  mutate(name = str_detect(word, "dainty\\b")) |>
+  filter(name == TRUE)
+
+kbl(table7)
+```
+
+Viola doesn't appear in Dainty's book, but it looks like dainty is Viola's book three times! Hmm, I can't say whether or not that's her name, or just the *word* dainty until I look at the surrounding words. I can see that dainty appears on lines 2536, 2800, and 6413.
+
+```{r}
+#| include: FALSE
+
+viola_sentences <- viola_text |>
+  mutate(line = row_number()) |>
+  unnest_tokens(sentence, text, token = "lines")
+```
+
+Unnesting by line instead of by word allows us to use str functions and regular expressions to find the whole sentences surrounding instances of "dainty" instead of just the word.
+
+```{r}
+#str_view(viola_sentences$sentence, "^.*dainty")
+```
+
+\[1849\] │ <dainty> morning-room, where she usually sat with viola.
+
+\[2041\] │ <she tapped her dainty> foot impatiently, murmuring:
+
+\[4614\] │ <trim it with pale lavender ribbons and dainty> white chiffon. then with
+
+We can see that none of these sentences is using Dainty as a name, and can conclude that the characters do not appear in the other's book.
+
+**It was fun to try to look through the data from these two super old books!**

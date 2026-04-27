@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -35,7 +70,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-707d8167ce6003fca903bfe2be84ab7f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
@@ -72,12 +106,16 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
 
 
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed fullcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -266,6 +304,10 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link active" href="./text_analysis.html" aria-current="page"> 
 <span class="menu-text">Mini Project 1 - Text Analysis</span></a>
   </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./maps.html"> 
+<span class="menu-text">maps</span></a>
+  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -278,36 +320,521 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
-    </div>
+    
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-
-<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-about-jolla">
+  <img src="media/headshot.jpg" class="about-image
+  round " style="height: 15em; width: 15em;">
+ <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Mini Project 1 - Text Analysis</h1>
 </div>
-
-
-
 <div class="quarto-title-meta">
-
-    
-  
-    
   </div>
-  
+</header><main class="content" id="quarto-document-content">
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>When books are posted for free on Project Gutenberg, that usually means that they’ve had to undergo formatting changes or otherwise converted into an e-book. One of the ways that this happens is through the work of volunteers (on the Distributed Proofreaders website). In the summer of 2024, I did some proofreading to help with the conversion of a book from 1897 called <em>Viola’s Vanity: or, A bitter expiation</em> by Mrs.&nbsp;Alex McVeigh Miller. For this Mini-project, I wanted to do some text analysis of this book, and a few others by Mrs.&nbsp;Miller.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="text_analysis_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Not surprisingly, when taking out stopwords, the most common word in the text is the name of the main character (Viola). Other character names, like Florian, Desha, and Maxwell are also in the top 20 most common words. Other common words include “heart” and “love” - a little on the nose for a 200 page romance novel from 1897, but it makes sense.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="text_analysis_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Graphing frequency of words by affinity score - how positive or negative the word is rated 5 to -5. Most words are either a little positive or a little negative, with only a few words having extreme scores of 4/-4 or 5 and no words scored -5. Interestingly, the -4 scored words are “torture”, “tortured”, and “tortures”, for a total of 7 times.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">gutenberg_id</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">line</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">word</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">t</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">3621</td>
+<td style="text-align: left;">presumptuousness</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">7327</td>
+<td style="text-align: left;">enthusiastically</td>
+<td style="text-align: right;">16</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: left;">thoughtlessness</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">755</td>
+<td style="text-align: left;">authoritatively</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">1480</td>
+<td style="text-align: left;">undemonstrative</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">1728</td>
+<td style="text-align: left;">thoughtlessness</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">1747</td>
+<td style="text-align: left;">representatives</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">2555</td>
+<td style="text-align: left;">sympathetically</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">4646</td>
+<td style="text-align: left;">correspondent’s</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">6234</td>
+<td style="text-align: left;">disappointments</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">6247</td>
+<td style="text-align: left;">congratulations</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">6255</td>
+<td style="text-align: left;">congratulations</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">6733</td>
+<td style="text-align: left;">_incommunicado_</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">6848</td>
+<td style="text-align: left;">_incommunicado_</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">259</td>
+<td style="text-align: left;">disapprovingly</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">890</td>
+<td style="text-align: left;">disapprobation</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">1251</td>
+<td style="text-align: left;">unsatisfactory</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">1777</td>
+<td style="text-align: left;">contradictions</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">2229</td>
+<td style="text-align: left;">disappointment</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">3842</td>
+<td style="text-align: left;">contemptuously</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">4362</td>
+<td style="text-align: left;">disinheritance</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">5062</td>
+<td style="text-align: left;">disapprobation</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">5112</td>
+<td style="text-align: left;">apprehensively</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">5408</td>
+<td style="text-align: left;">reconciliation</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">5880</td>
+<td style="text-align: left;">embarrassments</td>
+<td style="text-align: right;">14</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Counting the length of each word by number of letters, we can find the longest word in the book. Both preseumptuousness and enthusiastically have 16 letters! They each occur only once.</p>
+<p>What about in a different book by the same author?</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">gutenberg_id</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">line</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">word</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">t</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">4920</td>
+<td style="text-align: left;">uncomprehendingly</td>
+<td style="text-align: right;">17</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">1251</td>
+<td style="text-align: left;">conventionality</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">1533</td>
+<td style="text-align: left;">comprehensively</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">2543</td>
+<td style="text-align: left;">surreptitiously</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">2887</td>
+<td style="text-align: left;">unconsciousness</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">3716</td>
+<td style="text-align: left;">unconsciousness</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">5279</td>
+<td style="text-align: left;">unconsciousness</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">365</td>
+<td style="text-align: left;">disappointment</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">412</td>
+<td style="text-align: left;">affectionately</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">469</td>
+<td style="text-align: left;">disconsolately</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">1001</td>
+<td style="text-align: left;">pertinaciously</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">1099</td>
+<td style="text-align: left;">responsiveness</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">1454</td>
+<td style="text-align: left;">correspondence</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">1795</td>
+<td style="text-align: left;">accompaniments</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">2104</td>
+<td style="text-align: left;">disappointment</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">2345</td>
+<td style="text-align: left;">identification</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">2587</td>
+<td style="text-align: left;">disappointment</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">2629</td>
+<td style="text-align: left;">entertainments</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">2986</td>
+<td style="text-align: left;">investigations</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">3046</td>
+<td style="text-align: left;">identification</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">3092</td>
+<td style="text-align: left;">disappointment</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">3446</td>
+<td style="text-align: left;">disinheritance</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">3612</td>
+<td style="text-align: left;">interpretation</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">3627</td>
+<td style="text-align: left;">simultaneously</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">31257</td>
+<td style="text-align: right;">4251</td>
+<td style="text-align: left;">uncontrollable</td>
+<td style="text-align: right;">14</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>In another book by the same author, this one titled <em>Dainty’s Cruel Rivals, or the Fatal Birthday</em>, the longest word is uncomprehendingly, with 17 letters! We can also see that tied for second place is unconsciousness, and this one occurs <em>three</em> times in the book instead of once, like the other long words.</p>
+<p>But what proportion of the books are these long words?</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">long_word != "NA"</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">9183</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">46131</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">long_word != "NA"</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">2779</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">52535</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>If we define a “long word” as a word with 7 or more letters, then 9183 out of 55314 words in Viola’s Vanity are long (16.6%), but if we make a “long word” one with at least 9 letters, that number decreases to only 2779 words (5.3%)</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">long_word != "NA"</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">2774</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">51547</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Dainty’s Cruel Rivals has almost exactly the same number of 9+ letter words (2774 (compared to 2779!)) even though the book is a little longer.</p>
+<p>I wonder if any of the characters from one book appear in the other book, since they are part of the same series from the same author.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">gutenberg_id</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">line</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">word</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">gutenberg_id</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">line</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">word</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">name</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">2536</td>
+<td style="text-align: left;">dainty</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">2800</td>
+<td style="text-align: left;">dainty</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">74796</td>
+<td style="text-align: right;">6413</td>
+<td style="text-align: left;">dainty</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Viola doesn’t appear in Dainty’s book, but it looks like dainty is Viola’s book three times! Hmm, I can’t say whether or not that’s her name, or just the <em>word</em> dainty until I look at the surrounding words. I can see that dainty appears on lines 2536, 2800, and 6413.</p>
+<p>Unnesting by line instead of by word allows us to use str functions and regular expressions to find the whole sentences surrounding instances of “dainty” instead of just the word.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#str_view(viola_sentences$sentence, "^.*dainty")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>[1849] │ <dainty> morning-room, where she usually sat with viola.</dainty></p>
+<p>[2041] │ <she tapped="" her="" dainty=""> foot impatiently, murmuring:</she></p>
+<p>[4614] │ <trim it="" with="" pale="" lavender="" ribbons="" and="" dainty=""> white chiffon. then with</trim></p>
+<p>We can see that none of these sentences is using Dainty as a name, and can conclude that the characters do not appear in the other’s book.</p>
+<p><strong>It was fun to try to look through the data from these two super old books!</strong></p>
 
 
-</header>
-
-
-
-
-
-</main> <!-- /main -->
+</section>
+</main> 
+  <hr class="about-sep">
+   <div class="about-links">
+  <a href="https://github.com/philli17/miniproject3/blob/main/text_analysis.qmd" class="about-link" rel="" target="">
+     <span class="about-link-text">GitHub</span>
+  </a>
+</div>
+</div>
+ <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -323,13 +850,6 @@ ul.task-list li input[type="checkbox"] {
       window.document.body.appendChild(a);
     }
     setColorSchemeToggle(hasAlternateSentinel())
-    const icon = "";
-    const anchorJS = new window.AnchorJS();
-    anchorJS.options = {
-      placement: 'right',
-      icon: icon
-    };
-    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     
