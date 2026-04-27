@@ -28,13 +28,21 @@ library(statebins)
 library(leaflet)
 
 census <- read_csv("Census.csv")
-census <- census |>
+
+us_states <- map_data("state")
+```
+
+Using data from the US Census (data.census.gov), I was curious about mapping the different age categories of Americans. For example, the map below is of children under age 5. The percentages are for that state, so 5.5% of the total population of Alabama is children under age 5.
+
+```{r}
+#| echo: false
+#this is the percent under 5 static map
+census_age <- census |>
   select(-ends_with("Male!!Estimate")) |>
   select(-ends_with("Female!!Estimate")) |>
   slice_head(n = 20)
-census <- census[-2, ]
-
-percent_5 <- census[2, ]
+census_age <- census_age[-2, ]
+percent_5 <- census_age[2, ]
 percent_5 <- percent_5 |>
   select(-ends_with("Total!!Estimate"))
 percent_5 <- percent_5 |>
@@ -46,14 +54,6 @@ percent_5 <- percent_5 |>
 percent_5 <- percent_5 |>
   mutate(state = str_extract(state, "[A-Za-z\\s]*[^!]"))
 
-us_states <- map_data("state")
-```
-
-Using data from the US Census (data.census.gov), I was curious about mapping the different age categories of Americans. For example, the map below is of children under age 5. The percentages are for that state, so 5.5% of the total population of Alabama is children under age 5.
-
-```{r}
-#| echo: false
-
 percent_5 <- percent_5 |>
   mutate(state = str_to_lower(state))
 
@@ -63,4 +63,25 @@ percent_5 |>
   ggplot(mapping = aes(x = long, y = lat,
                           group = group)) + 
   geom_polygon(aes(fill = percent), color = "black")
+```
+
+```{r}
+#this is supposed to be the male/female static map
+census_sex <- census |>
+  select(-ends_with("Total!!Estimate")) |>
+  select(-ends_with("Percent!!Estimate")) |>
+  select(-ends_with(" Male!!Estimate")) |>
+  select(-ends_with(" Female!!Estimate")) |>
+  slice_head(n = 20) 
+census_sex <- census_sex[-1, ]
+census_sex <- census_sex[-1, ]
+
+#need to mutate to make num instead of chr
+#sum(census_sex$`Alabama!!Male!!Estimate`)
+#should sum the column
+
+#then compare male and female, create categorical variable for which is more
+#graph binary category
+
+#make graphs interactive
 ```
